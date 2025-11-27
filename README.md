@@ -1,1 +1,1 @@
-# ugly-sweater-voting
+# ugly-sweater-vote
