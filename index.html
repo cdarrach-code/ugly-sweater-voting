@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ugly Christmas Sweater Voting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #fef6f7;
+    }
+    h1 {
+      color: #d32f2f;
+    }
+    .container {
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .sweater-group {
+      margin-bottom: 40px;
+    }
+    .sweater {
+      border: 2px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      width: 150px;
+    }
+    img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c2185b;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    a {
+      text-decoration: none;
+      color: #e91e63;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vote for the Ugliest Christmas Sweater</h1>
+
+  <!-- Adult Sweater Voting Section -->
+  <div class="sweater-group">
+    <h2>Adult Sweater Contest</h2>
+    <div class="container">
+      <div class="sweater" data-category="adult" data-id="adult1">
+        <img src="https://via.placeholder.com/150?text=Adult+Sweater+1" alt="Adult Sweater 1">
+        <h3>Adult Sweater 1</h3>
+        <button onclick="vote('adult', 'adult1')">Vote</button>
+      </div>
+      <div class="sweater" data-category="adult" data-id="adult2">
+        <img src="https://via.placeholder.com/150?text=Adult+Sweater+2" alt="Adult Sweater 2">
+        <h3>Adult Sweater 2</h3>
+        <button onclick="vote('adult', 'adult2')">Vote</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Child Sweater Voting Section -->
+  <div class="sweater-group">
+    <h2>Child Sweater Contest</h2>
+    <div class="container">
+      <div class="sweater" data-category="child" data-id="child1">
+        <img src="https://via.placeholder.com/150?text=Child+Sweater+1" alt="Child Sweater 1">
+        <h3>Child Sweater 1</h3>
+        <button onclick="vote('child', 'child1')">Vote</button>
+      </div>
+      <div class="sweater" data-category="child" data-id="child2">
+        <img src="https://via.placeholder.com/150?text=Child+Sweater+2" alt="Child Sweater 2">
+        <h3>Child Sweater 2</h3>
+        <button onclick="vote('child', 'child2')">Vote</button>
+      </div>
+    </div>
+  </div>
+
+  <a href="results.html">View Results</a>
+
+  <script>
+    // Voting function with device restriction
+    function vote(category, id) {
+      const voteKey = `${category}Vote`; // e.g., 'adultVote' or 'childVote'
+      if (localStorage.getItem(voteKey)) {
+        alert(`You have already voted in the ${category} category.`);
+        return;
+      }
+
+      // Record the vote in local storage
+      let votes = JSON.parse(localStorage.getItem('sweaterVotes')) || {};
+      votes[id] = (votes[id] || 0) + 1;
+      localStorage.setItem('sweaterVotes', JSON.stringify(votes));
+      localStorage.setItem(voteKey, 'true'); // Limit one vote per category per device
+
+      alert(`Thank you for voting for ${id}!`);
+      disableButtons(category); // Disable buttons after voting
+    }
+
+    // Disable buttons for already-voted categories
+    function disableButtons(category) {
+      if (localStorage.getItem(`${category}Vote`)) {
+        document.querySelectorAll(`.sweater[data-category="${category}"] button`).forEach(button => {
+          button.disabled = true;
+        });
+      }
+    }
+
+    // Disable buttons on page load if already voted
+    window.onload = () => {
+      disableButtons('adult');
+      disableButtons('child');
+    };
+  </script>
+</body>
+</html>
